@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screen-Wide Click Animation</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Courier New', monospace; /* Updated to Courier New monospace */
+            background-color: transparent; /* Transparent background */
+        }
+
+        #animationContainer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .click-text {
+            position: absolute;
+            font-size: 21px; /* Font size set to 21px */
+            color: white;
+            opacity: 1;
+            transition: transform 0.8s cubic-bezier(0.6, 1.5, 0.5, 1), opacity 0.8s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div id="animationContainer"></div>
+
+    <script>
+        document.getElementById('animationContainer').addEventListener('click', function(event) {
+            const textElement = document.createElement('div');
+            textElement.classList.add('click-text');
+            textElement.textContent = '*click*'; // Updated text content
+            this.appendChild(textElement);
+
+            // Center text on cursor by adjusting for text dimensions
+            setTimeout(() => {
+                textElement.style.left = `${event.clientX - textElement.offsetWidth / 2}px`;
+                textElement.style.top = `${event.clientY - textElement.offsetHeight / 2}px`;
+            }, 1); // Delay to ensure offsetWidth and offsetHeight are available
+
+            // Generate random movement direction using angles
+            const angle = Math.random() * 360; // Angle in degrees
+            const radius = 100; // Maximum distance for the movement
+            const randomX = radius * Math.cos(angle * Math.PI / 180);
+            const randomY = radius * Math.sin(angle * Math.PI / 180);
+
+            // Animate movement and fade
+            setTimeout(() => {
+                textElement.style.transform = `translate(${randomX}px, ${randomY}px)`;
+                textElement.style.opacity = 0;
+            }, 100);
+
+            // Remove text element after animation
+            setTimeout(() => {
+                textElement.remove();
+            }, 2000); // Adjusted to match animation duration
+        });
+    </script>
+</body>
+</html>
