@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screen-Wide Click and Hover Animation</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Courier New', monospace;
+            background-color: transparent;
+        }
+
+        #animationContainer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .click-text, .hover-text {
+            position: absolute;
+            font-size: 21px;
+            color: white;
+            opacity: 1;
+            transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.6, 1.5, 0.5, 1);
+        }
+    </style>
+</head>
+<body>
+    <div id="animationContainer"></div>
+
+    <!-- Example clickable items -->
+    <div class="clickable">Clickable Item 1</div>
+    <div class="clickable">Clickable Item 2</div>
+    <div class="clickable">Clickable Item 3</div>
+
+    <script>
+        document.getElementById('animationContainer').addEventListener('click', function(event) {
+            const textElement = document.createElement('div');
+            textElement.classList.add('click-text');
+            textElement.textContent = '*click*';
+            this.appendChild(textElement);
+
+            setTimeout(() => {
+                textElement.style.left = `${event.clientX - textElement.offsetWidth / 2}px`;
+                textElement.style.top = `${event.clientY - textElement.offsetHeight / 2}px`;
+            }, 1);
+
+            const angle = Math.random() * 360;
+            const radius = 100;
+            const randomX = radius * Math.cos(angle * Math.PI / 180);
+            const randomY = radius * Math.sin(angle * Math.PI / 180);
+
+            setTimeout(() => {
+                textElement.style.transform = `translate(${randomX}px, ${randomY}px)`;
+                textElement.style.opacity = 0;
+            }, 100);
+
+            setTimeout(() => {
+                textElement.remove();
+            }, 2000);
+        });
+
+        document.querySelectorAll('.clickable').forEach(item => {
+            item.addEventListener('mouseenter', function(event) {
+                const hoverText = document.createElement('div');
+                hoverText.classList.add('hover-text');
+                hoverText.textContent = 'hovering...';
+                hoverText.style.position = 'absolute';
+                hoverText.style.left = `${event.clientX - this.getBoundingClientRect().left}px`;
+                hoverText.style.top = `${event.clientY - this.getBoundingClientRect().top}px`;
+                this.appendChild(hoverText);
+            });
+
+            item.addEventListener('mouseleave', function() {
+                if (this.contains(this.querySelector('.hover-text'))) {
+                    this.removeChild(this.querySelector('.hover-text'));
+                }
+            });
+        });
+    </script>
+</body>
+</html>
